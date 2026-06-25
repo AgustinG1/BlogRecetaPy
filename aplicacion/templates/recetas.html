@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+    <title>Recetas</title>
+{% endblock titulo %}
+
+{% block contenido %}
+    <h1>Recetas</h1>
+
+    <form action="{% url 'ver_recetas' %}" method="GET" class="mb-3 search-bar shadow-sm rounded-pill">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-0 rounded-pill ps-3" id="search-addon"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" name="q" class="form-control border-0" placeholder="Buscar recetas" aria-describedby="search-addon" style="box-shadow: none;">
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Buscar</button>
+        </div>
+    </form>
+    <div class="row">
+        {% if recetas %}
+            {% for receta in recetas %}
+                <div class="col-md-3">
+                   
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col">
+                <p>No hay recetas todavía.</p>
+            </div>
+        {% endif %}
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            {% for receta in recetas %}
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card horizontal-card w-100">
+                    <div class="row g-0 h-100 flex-column flex-md-row">
+                        <div class="col-md-4">
+                            {% if receta.imagen %}
+                            <img src="{{ receta.imagen.url }}" alt="Imagen de la receta" class="w-100 h-100" style="object-fit: cover;">
+                            {% else %}
+                            <img src="tu-imagen-predeterminada.jpg" alt="Imagen predeterminada" class="w-100 h-100" style="object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column h-100">
+                                <h2 class="card-title text-primary" style="font-weight: bold;">{{ receta.titulo }}</h2>
+                                <p class="card-text mb-2"><span class="badge badge-categoria">{{ receta.categoria }}</span></p>
+                                <p class="card-text"><strong>Ingredientes:</strong></p>
+                                <p class="card-text">{{ receta.ingredientes|safe|slice:":10" }}{% if receta.ingredientes|length > 50 %}...<a href="{% url 'detalle_receta' receta.id %}"></a>{% endif %}</p>
+                                <p class="card-text"><strong>Instrucciones:</strong></p>
+                                <p class="card-text">{{ receta.instrucciones|safe|slice:":100" }}{% if receta.instrucciones|length > 50 %}...<a href="{% url 'detalle_receta' receta.id %}">Ver más</a>{% endif %}</p>
+                                <div class="mt-auto pt-3">
+                                    <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-primary mr-2"><i class="bi bi-eye"></i> Ver detalles</a>
+                                    {% if user == receta.creador %}
+                                    <a href="{% url 'editar_receta' receta.id %}" class="btn btn-warning mr-2"><i class="bi bi-pencil"></i> Editar</a>
+                                    <form action="{% url 'eliminar_receta' receta.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'agregar_receta' %}" class="btn btn-success">Agregar una nueva receta</a>
+    <a href="{% url 'inicio' %}" class="btn btn-secondary">Volver a la página de inicio</a>
+{% endblock contenido %}

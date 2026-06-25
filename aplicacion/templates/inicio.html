@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block titulo %}  <title>Inicio - Mi Blog de Recetas</title>{% endblock titulo %}
+
+{% block contenido %}
+<div class="hero-section text-center text-white d-flex align-items-center justify-content-center shadow" style="min-height: 50vh; background: linear-gradient(rgba(45, 74, 43, 0.8), rgba(45, 74, 43, 0.8)), url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?q=80&w=2076&auto=format&fit=crop') center/cover; border-radius: 20px; overflow: hidden; margin-top: -2rem; margin-bottom: 3rem;">
+    <div class="container py-5">
+        <h1 class="display-3 fw-bolder mb-4" style="font-family: var(--font-headers);">
+            Bienvenido{% if request.user.is_authenticated %}, {{ request.user.username }}{% endif %}
+        </h1>
+        <p class="lead mb-5" style="font-size: 1.5rem; max-width: 800px; margin: 0 auto;">
+            Explora nuestro recetario, descubre sabores increíbles y comparte tus mejores creaciones culinarias de comida salada y dulce con la comunidad.
+        </p>
+        <a href="{% url 'ver_recetas' %}" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow" style="background-color: var(--color-accent); border: none; font-weight: bold; font-size: 1.2rem;">
+            <i class="bi bi-compass me-2"></i> Explorar Recetas
+        </a>
+    </div>
+</div>
+{% endblock contenido %}

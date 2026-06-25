@@ -1,0 +1,414 @@
+/* ============================================================
+   ESTILOS.CSS — Blog de Recetas
+   Tema: Forest Canopy (verdes orgánicos + ivory)
+   ============================================================ */
+
+/* ---------- 1. VARIABLES DE MARCA ---------- */
+:root {
+  /* Paleta Forest Canopy */
+  --color-primary: #2d4a2b;        /* Verde bosque — marca principal */
+  --color-primary-dark: #1f3520;   /* Hover/active de primary */
+  --color-accent: #7d8471;         /* Sage — botones secundarios */
+  --color-accent-light: #a4ac86;   /* Olive — fondos suaves, badges */
+  --color-bg: #faf9f6;             /* Ivory — fondo general */
+  --color-surface: #ffffff;        /* Fondo de tarjetas */
+  --color-text: #28321f;           /* Texto principal (verde casi negro) */
+  --color-text-muted: #5c6354;
+
+  /* Colores semánticos (independientes de la marca, NO tocar) */
+  --color-success: #3a7d44;
+  --color-success-dark: #2c5e34;
+  --color-warning: #c98a2c;
+  --color-warning-dark: #a86f1f;
+  --color-danger: #c0392b;
+  --color-danger-dark: #962d22;
+
+  /* Tipografía */
+  --font-headers: "Playfair Display", "Georgia", serif;
+  --font-body: "Open Sans", "Segoe UI", sans-serif;
+
+  /* Radios y sombras reutilizables */
+  --radius-pill: 20px;
+  --radius-card: 12px;
+  --shadow-card: 0 4px 10px rgba(45, 74, 43, 0.12);
+}
+
+/* ---------- 2. BASE ---------- */
+body {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+}
+
+/* Enlaces de contenido (ej. "Ver más" de CKEditor) — antes quedaban azul Bootstrap */
+a {
+  color: var(--color-primary);
+}
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ---------- 3. LAYOUT — FOOTER PEGADO SIN HACKS DE ABSOLUTE ---------- */
+/* Requiere en base.html: <body class="site-wrapper"> ... <main class="main-content">...</main> <footer>...</footer> */
+html, body.site-wrapper {
+  min-height: 100%;
+}
+body.site-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+.main-content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  width: 100%;
+  padding: 1rem 0;
+  background-color: var(--color-primary) !important;
+}
+.footer a {
+  text-decoration: none;
+  color: var(--color-bg);
+  transition: color 0.3s ease;
+}
+.footer a:hover {
+  color: var(--color-accent-light);
+}
+/* El text-muted de Bootstrap es gris oscuro -> ilegible sobre fondo verde */
+.footer .text-muted {
+  color: rgba(250, 249, 246, 0.7) !important;
+}
+
+/* ---------- 4. NAVBAR ---------- */
+.navbar.bg-light {
+  background-color: var(--color-primary) !important;
+}
+.navbar .navbar-brand,
+.navbar a {
+  color: var(--color-bg);
+  font-family: var(--font-headers);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.navbar .navbar-brand:hover,
+.navbar a:hover {
+  color: var(--color-accent-light);
+}
+.dropdown-menu .dropdown-item {
+  color: var(--color-text);
+}
+
+/* ---------- 5. BOTONES — sistema unificado ---------- */
+.btn {
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  transition: background-color 0.3s ease, box-shadow 0.15s ease;
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.4);
+}
+
+/* Primario — acción principal (ej. "Ver receta") */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+/* Secundario — acción de apoyo (ej. "Volver al inicio") */
+.btn-secondary {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+.btn-secondary:hover {
+  background-color: #656b5b;
+  border-color: #656b5b;
+}
+
+/* Éxito — confirmar / agregar (ej. "Agregar receta") */
+.btn-success {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+  color: #ffffff;
+}
+.btn-success:hover {
+  background-color: var(--color-success-dark);
+  border-color: var(--color-success-dark);
+}
+
+/* Advertencia — editar */
+.btn-warning {
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
+  color: #ffffff;
+}
+.btn-warning:hover {
+  background-color: var(--color-warning-dark);
+  border-color: var(--color-warning-dark);
+}
+
+/* Peligro — eliminar */
+.btn-danger {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background-color: var(--color-danger-dark);
+  border-color: var(--color-danger-dark);
+}
+
+/* Botón custom de perfil — unificado con el sistema, ya no usa azul de Bootstrap */
+.custom-btn {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+.custom-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+.custom-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.4);
+}
+
+/* Tamaño mínimo de touch target en botones dentro de tarjetas */
+.card-body .btn {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.85rem;
+  min-height: 36px;
+}
+
+/* Barra de búsqueda: input + botón fusionados en una sola píldora */
+.search-bar {
+  max-width: 640px;
+}
+.search-bar .form-control {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill) !important;
+  border-right: none;
+  padding-left: 1.1rem;
+  margin: 0;
+}
+.search-bar .form-control:focus {
+  box-shadow: none;
+  border-color: var(--color-accent-light);
+}
+.search-bar .btn {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- 6. GRID DE RECETAS — namespaced para no pisar Bootstrap ---------- */
+/* Antes: .row y .col-md-6 redefinidos globalmente (rompía otras páginas).
+   Ahora: todo vive bajo .recetas-grid para no interferir con el grid de Bootstrap. */
+.recetas-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px;
+}
+.recetas-grid .receta-col {
+  flex: 0 0 calc(50% - 20px);
+  max-width: calc(50% - 20px);
+  margin: 10px;
+  display: flex; /* permite que la tarjeta interna se estire a la altura de la fila */
+}
+@media (max-width: 768px) {
+  .recetas-grid .receta-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* ---------- 7. TARJETAS DE RECETA ---------- */
+.horizontal-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.horizontal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(45, 74, 43, 0.2);
+}
+/* El contenido viene de CKEditor y trae sus propios h1-h6;
+   dentro de la tarjeta deben verse como sub-textos, no como títulos de página */
+.horizontal-card .card-body h1,
+.horizontal-card .card-body h2,
+.horizontal-card .card-body h3,
+.horizontal-card .card-body h4 {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0.4rem 0 0.2rem;
+}
+.horizontal-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.horizontal-card:hover img {
+  transform: scale(1.05);
+}
+.horizontal-card .card-body {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.horizontal-card .card-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid rgba(45, 74, 43, 0.12);
+}
+.horizontal-card .card-body p {
+  margin-bottom: 0.4rem;
+}
+/* Trunca ingredientes/instrucciones a 3 líneas en la vista de listado,
+   el texto completo se ve en detalle_receta.html */
+.horizontal-card .card-body .card-text--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom Badges */
+.badge-categoria {
+  background-color: var(--color-accent-light);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  padding: 0.4em 0.8em;
+  font-size: 0.8rem;
+  border-radius: var(--radius-pill);
+}
+
+/* ---------- 8. FORMULARIOS ---------- */
+.form-group {
+  margin-bottom: 20px;
+}
+label {
+  font-weight: bold;
+  color: var(--color-text);
+}
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+input[type="text"]:focus-visible,
+input[type="password"]:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.2);
+}
+
+.custom-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- 9. PERFIL ---------- */
+.custom-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* resta el alto aprox. del footer, evita doble scroll */
+  padding: 2rem 0;
+}
+.edit-profile-box {
+  max-width: 500px;
+  width: 100%;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.edit-profile-box h3 {
+  font-family: var(--font-headers);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: var(--color-primary);
+}
+.edit-profile-box p {
+  font-size: 1.1rem;
+}
+
+/* ---------- 10. RESPONSIVE REFINEMENTS ---------- */
+@media (max-width: 768px) {
+  /* Reducir tamaños de cabeceras hero en móviles */
+  .recipe-hero {
+    height: 300px !important;
+    margin-top: 0 !important;
+  }
+  .recipe-hero h1, .hero-section h1 {
+    font-size: 2.2rem !important;
+  }
+  .hero-section p {
+    font-size: 1.1rem !important;
+  }
+  .hero-section {
+    min-height: 40vh !important;
+    margin-top: 0 !important;
+  }
+  
+  /* Menos overlap de las tarjetas en móvil para que no tapen los títulos */
+  .col-lg-10 > .card, .col-lg-8 > .card {
+    margin-top: -20px !important;
+  }
+  
+  /* Ajuste para las tarjetas horizontales de la lista de recetas en móvil */
+  .horizontal-card .col-md-4 {
+    min-height: 250px; /* Evitar que la imagen colapse al 100% de 0 */
+  }
+  
+  /* Espaciado de about.html en móvil */
+  .container.d-flex.align-items-center {
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+  }
+  
+  /* Reducir padding de listas (CKEditor) en móvil para que el texto no se apriete */
+  .instrucciones-content ol, .instrucciones-content ul, .ingredientes-content ul {
+      padding-left: 1.2rem !important;
+  }
+  
+  /* Evitar que el editor de comentarios se vea excesivamente alargado verticalmente */
+  .ck-editor__editable_inline {
+      min-height: 120px !important;
+      max-height: 200px !important;
+      overflow-y: auto !important;
+  }
+}

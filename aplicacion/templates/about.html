@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    <title>Acerca de mí - Mi Blog de Recetas</title>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="card shadow-lg border-0" style="max-width: 900px; border-radius: 20px; overflow: hidden;">
+        <div class="row g-0">
+            <!-- Sección de la Imagen -->
+            <div class="col-md-5" style="min-height: 350px;">
+                <img src="{% static 'images/About.jpg' %}" alt="Foto del creador" class="w-100 h-100" style="object-fit: cover; object-position: center;">
+            </div>
+            
+            <!-- Sección de Contenido -->
+            <div class="col-md-7 d-flex align-items-center bg-white">
+                <div class="card-body p-5">
+                    <h1 class="card-title fw-bolder mb-4 text-primary" style="font-family: var(--font-headers); font-size: 2.8rem;">
+                        Acerca de mí
+                    </h1>
+                    
+                    <p class="card-text mb-4" style="font-size: 1.15rem; line-height: 1.8; color: var(--color-text);">
+                        ¡Hola! Soy el creador de esta página y me encanta compartir contenido relacionado con recetas de todo tipo.
+                    </p>
+                    
+                    <hr class="mb-4" style="opacity: 0.1;">
+                    
+                    <div class="contact-box p-4 rounded-4 shadow-sm text-center" style="background-color: var(--color-bg); border: 1px solid rgba(45, 74, 43, 0.1);">
+                        <p class="mb-2 text-muted fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
+                            <i class="bi bi-chat-heart text-primary me-1"></i> Para cualquier pregunta o sugerencia, puedes contactarme en:
+                        </p>
+                        <a href="mailto:example@email.com" class="text-decoration-none fw-bolder fs-5" style="color: var(--color-primary); transition: color 0.3s ease;">
+                            <i class="bi bi-envelope-at me-1"></i> example@email.com
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contenido %}
