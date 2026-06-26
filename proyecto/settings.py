@@ -29,7 +29,7 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+2szg7xax@t=g4a27c%7d(oy-uox@ax10!wil(%azwy$-os#4m')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = True # TEMPORALMENTE TRUE PARA VER EL ERROR EN RENDER
 
 ALLOWED_HOSTS = []
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -222,3 +222,33 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+
+
+
+
+
+
+# --- PARCHE PARA COMPATIBILIDAD CON PYTHON 3.14 (LOCAL) v2 ---
+try:
+    import django.template.context
+    def _basecontext_copy(self):
+        duplicate = object.__new__(self.__class__)
+        duplicate.dicts = self.dicts[:]
+        return duplicate
+    django.template.context.BaseContext.__copy__ = _basecontext_copy
+    def _context_copy(self):
+        duplicate = object.__new__(self.__class__)
+        duplicate.dicts = self.dicts[:]
+        duplicate.render_context = django.template.context.copy(self.render_context) if hasattr(self, 'render_context') else None
+        duplicate.template_name = getattr(self, 'template_name', None)
+        for attr in ('request', 'autoescape', 'use_l10n', 'use_tz', 'template', '_processors', '_processors_index'):
+            if hasattr(self, attr):
+                setattr(duplicate, attr, getattr(self, attr))
+        return duplicate
+    django.template.context.Context.__copy__ = _context_copy
+except Exception:
+    pass
+# -----------------------------------------------------------
+
