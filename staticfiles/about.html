@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}  <!-- Asegúrate de cargar los archivos estáticos al principio -->
+
+{% block titulo %}
+    <title>Acerca de</title>
+{% endblock titulo %}
+
+{% block contenido %}
+<div class="row featurette align-items-center justify-content-center">
+    <div class="col-md-6">
+        <h1>Acerca de mí</h1>
+        <p>¡Hola! Soy el creador de esta página y me encanta compartir contenido relacionado con recetas de todo tipo.</p>
+        <p>Puedes contactarme en example@email.com para cualquier pregunta o sugerencia.</p>
+     
+    </div>
+    <div class="col-md-6">
+        <img src="{% static 'images/receta_default.jpg' %}" alt="Foto" width="200" height="150" style="max-width: 100%; height: auto;">
+    </div>
+</div>
+
+
+{% endblock contenido %}

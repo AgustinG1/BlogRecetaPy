@@ -153,7 +153,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "images/")
 
 LOGIN_URL = 'login'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Cloudinary configuration para guardar imágenes en la nube
