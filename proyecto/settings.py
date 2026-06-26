@@ -156,6 +156,7 @@ LOGIN_URL = 'login'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 
 # Cloudinary configuration para guardar imágenes en la nube
 if 'CLOUDINARY_URL' in os.environ:
