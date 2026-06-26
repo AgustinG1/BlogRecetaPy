@@ -50,8 +50,17 @@ def detalle_receta(request, receta_id):
 
 def ver_recetas(request):
     query = request.GET.get('q', '')  
-    recetas = Receta.objects.filter(titulo__icontains=query) if query else Receta.objects.all()
-    return render(request, 'recetas.html', {'recetas': recetas, 'query': query})
+    categoria = request.GET.get('categoria', '')
+
+    recetas = Receta.objects.all()
+
+    if query:
+        recetas = recetas.filter(titulo__icontains=query)
+    
+    if categoria:
+        recetas = recetas.filter(categoria__nombre=categoria)
+
+    return render(request, 'recetas.html', {'recetas': recetas, 'query': query, 'categoria_activa': categoria})
 
 @login_required
 def eliminar_receta(request, receta_id):
