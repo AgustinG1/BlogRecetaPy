@@ -98,6 +98,9 @@ DATABASES = {
     )
 }
 
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default']['OPTIONS'] = {'ssl': {}}
+
 
 
 # Password validation
