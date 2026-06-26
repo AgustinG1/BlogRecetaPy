@@ -155,8 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "images/")
 LOGIN_URL = 'login'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_MANIFEST_STRICT = False
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Cloudinary configuration para guardar imágenes en la nube
 if 'CLOUDINARY_URL' in os.environ:
