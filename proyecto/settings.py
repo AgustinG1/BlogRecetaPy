@@ -138,7 +138,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / 'aplicacion/templates',
 ]
 
 # Default primary key field type
@@ -154,7 +153,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "images/")
 LOGIN_URL = 'login'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Cloudinary configuration para guardar imágenes en la nube
 if 'CLOUDINARY_URL' in os.environ:
