@@ -1,20 +1,27 @@
 {% extends "base.html" %}
 
-{% block titulo %}
-<title>Editar perfil</title>
-{% endblock titulo %}
+{% block titulo %}<title>Editar perfil - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
-<div class="custom-container">
-  <div class="edit-profile-box">
-      <p>Tu username es <b>{{ object.username }}</b></p>
-      <h3>Editar datos:</h3>
-      <form method="post" class="custom-form">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <input type="submit" value="Salvar" class="custom-btn" />
-      </form>
-  </div>
-</div>
+<div class="form-page">
+    <div class="form-card">
+        <div class="text-center mb-4">
+            <h1 class="form-card-title h3">Editar perfil</h1>
+            <p class="form-card-subtitle mb-0">Actualizá tus datos personales</p>
+        </div>
 
+        <p class="text-center text-muted mb-4">
+            Tu nombre de usuario es <strong class="text-primary">{{ object.username }}</strong>
+        </p>
+
+        <form method="post" class="site-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check-lg me-2"></i>Guardar cambios</button>
+                <a href="{% url 'agregar_avatar' %}" class="btn btn-outline-primary"><i class="bi bi-image me-2"></i>Cambiar avatar</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock contenido %}

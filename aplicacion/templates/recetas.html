@@ -1,73 +1,76 @@
 {% extends 'base.html' %}
 
-{% block titulo %}
-    <title>Recetas</title>
-{% endblock titulo %}
+{% block titulo %}<title>Recetas - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
-    <h1>Recetas</h1>
+<div class="container">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="section-title display-5">Nuestras recetas</h1>
+        <p class="section-subtitle mx-auto">Explorá, buscá y encontrá tu próxima receta favorita.</p>
+    </div>
 
-    <form action="{% url 'ver_recetas' %}" method="GET" class="mb-3 search-bar shadow-sm rounded-pill">
+    <!-- Search -->
+    <form action="{% url 'ver_recetas' %}" method="GET" class="search-bar mx-auto mb-4">
         <div class="input-group">
-            <span class="input-group-text bg-white border-0 rounded-pill ps-3" id="search-addon"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" name="q" class="form-control border-0" placeholder="Buscar recetas" aria-describedby="search-addon" style="box-shadow: none;">
-            <button type="submit" class="btn btn-primary rounded-pill px-4">Buscar</button>
+            <span class="input-group-text" id="search-addon"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por nombre de receta..." aria-describedby="search-addon">
+            <button type="submit" class="btn btn-primary">Buscar</button>
         </div>
     </form>
-    <div class="row">
-        {% if recetas %}
-            {% for receta in recetas %}
-                <div class="col-md-3">
-                   
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="col">
-                <p>No hay recetas todavía.</p>
-            </div>
-        {% endif %}
+
+    <!-- Category filters -->
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+        <a href="{% url 'ver_recetas' %}{% if query %}?q={{ query }}{% endif %}" class="btn {% if not categoria_activa %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm">Todas</a>
+        <a href="{% url 'ver_recetas' %}?categoria=salada{% if query %}&q={{ query }}{% endif %}" class="btn {% if categoria_activa == 'salada' %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm">Saladas</a>
+        <a href="{% url 'ver_recetas' %}?categoria=dulce{% if query %}&q={{ query }}{% endif %}" class="btn {% if categoria_activa == 'dulce' %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm">Dulces</a>
+        <a href="{% url 'ver_recetas' %}?categoria=vegetariana{% if query %}&q={{ query }}{% endif %}" class="btn {% if categoria_activa == 'vegetariana' %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm">Vegetarianas</a>
     </div>
 
-
-    <div class="container">
-        <div class="row">
-            {% for receta in recetas %}
-            <div class="col-md-6 mb-3 d-flex">
-                <div class="card horizontal-card w-100">
-                    <div class="row g-0 h-100 flex-column flex-md-row">
-                        <div class="col-md-4">
-                            {% if receta.imagen %}
-                            <img src="{{ receta.imagen.url }}" alt="Imagen de la receta" class="w-100 h-100" style="object-fit: cover;">
-                            {% else %}
-                            <img src="tu-imagen-predeterminada.jpg" alt="Imagen predeterminada" class="w-100 h-100" style="object-fit: cover;">
-                            {% endif %}
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body d-flex flex-column h-100">
-                                <h2 class="card-title text-primary" style="font-weight: bold;">{{ receta.titulo }}</h2>
-                                <p class="card-text mb-2"><span class="badge badge-categoria">{{ receta.categoria }}</span></p>
-                                <p class="card-text"><strong>Ingredientes:</strong></p>
-                                <p class="card-text">{{ receta.ingredientes|safe|slice:":10" }}{% if receta.ingredientes|length > 50 %}...<a href="{% url 'detalle_receta' receta.id %}"></a>{% endif %}</p>
-                                <p class="card-text"><strong>Instrucciones:</strong></p>
-                                <p class="card-text">{{ receta.instrucciones|safe|slice:":100" }}{% if receta.instrucciones|length > 50 %}...<a href="{% url 'detalle_receta' receta.id %}">Ver más</a>{% endif %}</p>
-                                <div class="mt-auto pt-3">
-                                    <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-primary mr-2"><i class="bi bi-eye"></i> Ver detalles</a>
-                                    {% if user == receta.creador %}
-                                    <a href="{% url 'editar_receta' receta.id %}" class="btn btn-warning mr-2"><i class="bi bi-pencil"></i> Editar</a>
-                                    <form action="{% url 'eliminar_receta' receta.id %}" method="post" class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar</button>
-                                    </form>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+    <!-- Recipe grid -->
+    {% if recetas %}
+    <div class="row g-4">
+        {% for receta in recetas %}
+        <div class="col-md-6 col-lg-4">
+            <article class="card-recipe">
+                <div class="card-img-wrapper">
+                    <span class="badge-categoria badge-categoria-float">{{ receta.categoria }}</span>
+                    <img src="{{ receta.imagen.url }}" alt="{{ receta.titulo }}">
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title h4">{{ receta.titulo }}</h2>
+                    <p class="card-text">{{ receta.subtitulo|default:"Una deliciosa receta para compartir." }}</p>
+                    <div class="card-actions">
+                        <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-primary btn-sm"><i class="bi bi-eye me-1"></i> Ver detalles</a>
+                        {% if user == receta.creador %}
+                        <a href="{% url 'editar_receta' receta.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                        <form action="{% url 'eliminar_receta' receta.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta receta?')" aria-label="Eliminar receta"><i class="bi bi-trash"></i></button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
+            </article>
+        </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state bg-white rounded-3 shadow-sm">
+        <i class="bi bi-search"></i>
+        <h3 class="h4">No encontramos recetas</h3>
+        <p class="mb-3">Probá con otros términos de búsqueda o filtros.</p>
+        <a href="{% url 'ver_recetas' %}" class="btn btn-primary">Ver todas las recetas</a>
+    </div>
+    {% endif %}
 
-    <a href="{% url 'agregar_receta' %}" class="btn btn-success">Agregar una nueva receta</a>
-    <a href="{% url 'inicio' %}" class="btn btn-secondary">Volver a la página de inicio</a>
+    <!-- Actions -->
+    <div class="text-center mt-5">
+        {% if user.is_authenticated %}
+        <a href="{% url 'agregar_receta' %}" class="btn btn-success btn-lg"><i class="bi bi-plus-lg me-2"></i> Agregar una receta</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg"><i class="bi bi-person me-2"></i> Iniciá sesión para agregar recetas</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock contenido %}

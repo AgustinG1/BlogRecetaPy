@@ -1,125 +1,128 @@
 {% extends 'base.html' %}
 
-{% block titulo %}
-    <title>Detalles de la Receta: {{ receta.titulo }}</title>
-{% endblock titulo %}
+{% block titulo %}<title>{{ receta.titulo }} - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
-<!-- HERO BANNER -->
-<div class="recipe-hero mb-5 position-relative shadow" style="border-radius: 20px; height: 450px; overflow: hidden; background-color: var(--color-surface); margin-top: -2rem;">
-    <img src="{{ receta.imagen.url }}" alt="Imagen de la receta" class="w-100 h-100" style="object-fit: cover;">
-    <!-- Overlay gradiente -->
-    <div class="position-absolute bottom-0 start-0 w-100" style="background: linear-gradient(transparent, rgba(31, 53, 32, 0.95)); padding: 60px 40px 30px;">
-        <h1 class="text-white fw-bolder mb-2" style="font-family: var(--font-headers); font-size: 3.5rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.4);">{{ receta.titulo }}</h1>
-        <span class="badge badge-categoria mt-1 shadow-sm" style="font-size: 1.1rem; padding: 0.5em 1em;"><i class="bi bi-tag-fill me-1"></i> {{ receta.categoria }}</span>
+<!-- Hero -->
+<section class="recipe-hero" aria-labelledby="recipe-title">
+    <img src="{{ receta.imagen.url }}" alt="{{ receta.titulo }}">
+    <div class="recipe-hero-overlay">
+        <div class="w-100">
+            <span class="badge-categoria mb-2 d-inline-block"><i class="bi bi-tag-fill me-1"></i> {{ receta.categoria }}</span>
+            <h1 id="recipe-title" class="recipe-title">{{ receta.titulo }}</h1>
+            {% if receta.subtitulo %}
+            <p class="lead text-white mb-0 opacity-90">{{ receta.subtitulo }}</p>
+            {% endif %}
+        </div>
     </div>
-</div>
+</section>
 
 <div class="container">
     <div class="row justify-content-center">
-        <!-- CONTENIDO PRINCIPAL -->
         <div class="col-lg-10">
-            <div class="card shadow-lg border-0 mb-5" style="border-radius: var(--radius-card); margin-top: -80px; z-index: 10;">
-                <div class="card-body px-2 px-md-5 py-4 py-md-5 text-start">
-                    
-                    <div class="row">
-                        <div class="col-md-5 mb-4">
-                            <div class="recipe-section bg-light px-2 px-md-4 py-3 py-md-4 rounded-3 h-100 border" style="border-color: rgba(45, 74, 43, 0.1) !important;">
-                                <h3 class="mb-4 text-primary" style="font-family: var(--font-headers); border-bottom: 2px solid var(--color-accent-light); padding-bottom: 10px;">
-                                    <i class="bi bi-basket me-2"></i> Ingredientes
-                                </h3>
-                                <div class="ingredientes-content" style="line-height: 1.8; font-size: 1.05rem;">
-                                    {{ receta.ingredientes|safe }}
-                                </div>
-                            </div>
+            <!-- Recipe content -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-5">
+                    <div class="recipe-section">
+                        <h3><i class="bi bi-basket me-2"></i>Ingredientes</h3>
+                        <div class="ingredientes-content text-content">
+                            {{ receta.ingredientes|safe }}
                         </div>
-
-                        <div class="col-md-7 mb-4">
-                            <div class="recipe-section px-2 px-md-4 py-3 py-md-4">
-                                <h3 class="mb-4 text-primary text-break" style="font-family: var(--font-headers); border-bottom: 2px solid var(--color-accent-light); padding-bottom: 10px;">
-                                    <i class="bi bi-list-ol me-2"></i> Instrucciones
-                                </h3>
-                                <div class="instrucciones-content" style="line-height: 1.8; font-size: 1.1rem; color: var(--color-text);">
-                                    {{ receta.instrucciones|safe }}
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="recipe-section">
+                        <h3><i class="bi bi-list-ol me-2"></i>Instrucciones</h3>
+                        <div class="instrucciones-content text-content">
+                            {{ receta.instrucciones|safe }}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN DE COMENTARIOS -->
-            <div class="card shadow-sm border-0 mb-5" style="border-radius: var(--radius-card);">
-                <div class="card-body px-2 px-md-5 py-4 py-md-5">
-                    <h3 class="mb-4 text-primary text-break" style="font-family: var(--font-headers); border-bottom: 2px solid var(--color-accent-light); padding-bottom: 10px;">
-                        <i class="bi bi-chat-dots me-2"></i> Comentarios
-                    </h3>
+            <!-- Author actions -->
+            {% if user == receta.creador %}
+            <div class="d-flex flex-wrap gap-2 justify-content-center mb-5">
+                <a href="{% url 'editar_receta' receta.id %}" class="btn btn-warning"><i class="bi bi-pencil me-2"></i>Editar receta</a>
+                <form action="{% url 'eliminar_receta' receta.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar esta receta permanentemente?')"><i class="bi bi-trash me-2"></i>Eliminar receta</button>
+                </form>
+            </div>
+            {% endif %}
 
-                    {% if user.is_authenticated %}
-                        <div class="mb-5 bg-light px-3 px-md-4 py-3 py-md-4 rounded-3 border" style="border-color: rgba(45, 74, 43, 0.1) !important;">
-                            <h5 class="mb-3 fw-bold text-primary"><i class="bi bi-pencil-square me-2"></i> Dejar un comentario</h5>
-                            <form method="post" action="{% url 'agregar_comentario' receta_id=receta.id %}">
-                                {% csrf_token %}
-                                {{ form.media }}
-                                <div class="ckeditor-container mt-2">
-                                    {{ form.as_p }}
-                                </div>
-                                <div class="text-end mt-3">
-                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="bi bi-send me-1"></i> Publicar</button>
-                                </div>
-                            </form>
+            <!-- Comments -->
+            <section class="recipe-section mb-5" aria-labelledby="comments-title">
+                <h3 id="comments-title"><i class="bi bi-chat-dots me-2"></i>Comentarios</h3>
+
+                {% if user.is_authenticated %}
+                <div class="comment-card mb-4">
+                    <h4 class="h5 mb-3 text-primary">Dejar un comentario</h4>
+                    <form method="post" action="{% url 'agregar_comentario' receta_id=receta.id %}" class="site-form">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        <div class="ckeditor-container">
+                            {{ form.as_p }}
                         </div>
-                    {% else %}
-                        <div class="alert alert-warning rounded-3 text-center mb-5 shadow-sm border-0" style="background-color: #fff3cd; color: #856404;">
-                            <i class="bi bi-info-circle me-2 fs-5 align-middle"></i> <a href="{% url 'login' %}" class="fw-bold" style="color: #856404; text-decoration: underline;">Inicia sesión</a> para dejar un comentario.
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Publicar comentario</button>
                         </div>
-                    {% endif %}
-                    
-                    <div class="comments-list text-start">
-                        {% for comentario in comentarios %}
-                            <div class="d-flex mb-4 px-3 px-md-4 py-3 py-md-4 bg-white border rounded-3 shadow-sm flex-column flex-sm-row" style="border-color: rgba(45, 74, 43, 0.1) !important;">
-                                <div class="me-3 mb-3 mb-sm-0">
-                                    <div class="text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm mx-auto mx-sm-0" style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold; background-color: var(--color-accent);">
-                                        {{ comentario.autor.username|make_list|first|upper }}
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1" style="min-width: 0;">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-                                        <h5 class="mb-1 mb-sm-0 fw-bold text-primary text-truncate me-2 text-center text-sm-start w-100 w-sm-auto" style="max-width: 100%;">{{ comentario.autor.username }}</h5>
-                                        <small class="text-muted bg-light px-2 py-1 rounded-pill mx-auto mx-sm-0"><i class="bi bi-clock me-1"></i> {{ comentario.fecha_creacion }}</small>
-                                    </div>
-                                    <div class="mb-2 text-muted comentario-texto" style="line-height: 1.7; font-size: 1.05rem;">
-                                        {{ comentario.contenido|safe }}
-                                    </div>
-                                    {% if request.user == comentario.autor %}
-                                        <form method="post" action="{% url 'eliminar_comentario' comentario.id %}" class="text-end mt-2">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i class="bi bi-trash"></i> Eliminar</button>
-                                        </form>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% empty %}
-                            <div class="text-center text-muted p-5 bg-light rounded-3 border">
-                                <i class="bi bi-chat-square-quote text-secondary display-3 mb-3 d-block"></i>
-                                <h4 class="fw-bold">Aún no hay comentarios</h4>
-                                <p>¡Sé el primero en dar tu opinión sobre esta receta!</p>
-                            </div>
-                        {% endfor %}
-                    </div> 
+                    </form>
                 </div>
+                {% else %}
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <div><a href="{% url 'login' %}" class="fw-bold">Iniciá sesión</a> para dejar un comentario.</div>
+                </div>
+                {% endif %}
+
+                <div class="comments-list">
+                    {% for comentario in comentarios %}
+                    <article class="comment-card">
+                        <div class="d-flex gap-3 flex-column flex-sm-row">
+                            <div class="comment-avatar">
+                                {{ comentario.autor.username|make_list|first|upper }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                                    <h4 class="h6 mb-0 text-primary fw-bold">{{ comentario.autor.username }}</h4>
+                                    <span class="comment-meta"><i class="bi bi-clock me-1"></i>{{ comentario.fecha_creacion }}</span>
+                                </div>
+                                <div class="comment-text text-content">
+                                    {{ comentario.contenido|safe }}
+                                </div>
+                                {% if request.user == comentario.autor %}
+                                <div class="text-end mt-2">
+                                    <form method="post" action="{% url 'eliminar_comentario' comentario.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este comentario?')"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="empty-state bg-light rounded-3">
+                        <i class="bi bi-chat-square-quote"></i>
+                        <h4 class="h5">Aún no hay comentarios</h4>
+                        <p class="mb-0">¡Sé el primero en compartir tu opinión sobre esta receta!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Back link -->
+            <div class="text-center">
+                <a href="{% url 'ver_recetas' %}" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i>Volver a recetas</a>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Ajustes para el editor CKEditor en esta página para que no se rompa visualmente */
 .ckeditor-container label {
-    display: none; /* Ocultamos el label genérico ("Contenido:") para que se vea más limpio */
-}
-.comentario-texto p:last-child {
-    margin-bottom: 0;
+    display: none;
 }
 </style>
 {% endblock contenido %}

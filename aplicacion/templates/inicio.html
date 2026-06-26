@@ -1,19 +1,119 @@
 {% extends 'base.html' %}
 
-{% block titulo %}  <title>Inicio - Mi Blog de Recetas</title>{% endblock titulo %}
+{% block titulo %}<title>Inicio - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
-<div class="hero-section text-center text-white d-flex align-items-center justify-content-center shadow" style="min-height: 50vh; background: linear-gradient(rgba(45, 74, 43, 0.8), rgba(45, 74, 43, 0.8)), url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?q=80&w=2076&auto=format&fit=crop') center/cover; border-radius: 20px; overflow: hidden; margin-top: -2rem; margin-bottom: 3rem;">
-    <div class="container py-5">
-        <h1 class="display-3 fw-bolder mb-4" style="font-family: var(--font-headers);">
+<!-- Hero -->
+<section class="hero-section" aria-labelledby="hero-title">
+    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?q=80&w=2076&auto=format&fit=crop');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <h1 id="hero-title" class="hero-title">
             Bienvenido{% if request.user.is_authenticated %}, {{ request.user.username }}{% endif %}
         </h1>
-        <p class="lead mb-5" style="font-size: 1.5rem; max-width: 800px; margin: 0 auto;">
-            Explora nuestro recetario, descubre sabores increíbles y comparte tus mejores creaciones culinarias de comida salada y dulce con la comunidad.
+        <p class="hero-lead">
+            Descubre recetas caseras, comparte tus mejores creaciones y disfruta de sabores increíbles en cada plato.
         </p>
-        <a href="{% url 'ver_recetas' %}" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow" style="background-color: var(--color-accent); border: none; font-weight: bold; font-size: 1.2rem;">
-            <i class="bi bi-compass me-2"></i> Explorar Recetas
+        <a href="{% url 'ver_recetas' %}" class="btn btn-light btn-lg">
+            <i class="bi bi-compass me-2"></i> Explorar recetas
         </a>
     </div>
-</div>
+</section>
+
+<!-- Categories -->
+<section class="container mb-5">
+    <div class="text-center mb-4">
+        <h2 class="section-title h1">Explorá por categoría</h2>
+        <p class="section-subtitle mx-auto">Encontrá la receta perfecta para cada momento.</p>
+    </div>
+    <div class="row justify-content-center g-4">
+        <div class="col-6 col-md-3 text-center">
+            <a href="{% url 'ver_recetas' %}?categoria=salada" class="category-pill">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop" alt="Comida salada" class="category-img">
+                <span>Saladas</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+            <a href="{% url 'ver_recetas' %}?categoria=dulce" class="category-pill">
+                <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&auto=format&fit=crop" alt="Comida dulce" class="category-img">
+                <span>Dulces</span>
+            </a>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+            <a href="{% url 'ver_recetas' %}?categoria=vegetariana" class="category-pill">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&auto=format&fit=crop" alt="Comida vegetariana" class="category-img">
+                <span>Vegetarianas</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest recipes -->
+<section class="container mb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="section-title h1 mb-0">Últimas recetas</h2>
+            <p class="section-subtitle mb-0">Las novedades de nuestra cocina.</p>
+        </div>
+        <a href="{% url 'ver_recetas' %}" class="btn btn-outline-primary d-none d-md-inline-flex">
+            Ver todas <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+    </div>
+
+    {% if recetas_destacadas %}
+    <div class="row g-4">
+        {% for receta in recetas_destacadas %}
+        <div class="col-md-6 col-lg-4">
+            <article class="card-recipe">
+                <div class="card-img-wrapper">
+                    <span class="badge-categoria badge-categoria-float">{{ receta.categoria }}</span>
+                    <img src="{{ receta.imagen.url }}" alt="{{ receta.titulo }}">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{ receta.titulo }}</h3>
+                    <p class="card-text">{{ receta.subtitulo|default:"Una deliciosa receta para compartir." }}</p>
+                    <div class="card-actions">
+                        <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-primary btn-sm">Ver receta</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4 d-md-none">
+        <a href="{% url 'ver_recetas' %}" class="btn btn-outline-primary">Ver todas las recetas <i class="bi bi-arrow-right ms-2"></i></a>
+    </div>
+    {% else %}
+    <div class="empty-state bg-white rounded-3 shadow-sm">
+        <i class="bi bi-journal-x"></i>
+        <h3 class="h4">Aún no hay recetas</h3>
+        <p class="mb-3">Sé el primero en compartir una receta con la comunidad.</p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'agregar_receta' %}" class="btn btn-success">Agregar receta</a>
+        {% else %}
+        <a href="{% url 'registro' %}" class="btn btn-primary">Crear cuenta</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+
+<!-- Newsletter (Comentado para futura implementación: Sección para suscribirse al correo y recibir recetas)
+<section class="container mb-5">
+    <div class="newsletter-section">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+                <h2 class="h1 mb-2">¿Te gustan las recetas?</h2>
+                <p class="mb-0 opacity-90">Recibí las últimas novedades y recetas exclusivas directamente en tu correo.</p>
+            </div>
+            <div class="col-lg-5">
+                <form class="d-flex gap-2 flex-column flex-sm-row">
+                    <label for="newsletter-email" class="visually-hidden">Correo electrónico</label>
+                    <input type="email" id="newsletter-email" class="form-control" placeholder="Tu correo electrónico" required>
+                    <button type="submit" class="btn btn-light flex-shrink-0">Suscribirme</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+-->
 {% endblock contenido %}

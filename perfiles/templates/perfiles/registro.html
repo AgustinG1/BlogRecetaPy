@@ -1,15 +1,26 @@
 {% extends "base.html" %}
 
+{% block titulo %}<title>Crear cuenta - Blog de Recetas</title>{% endblock titulo %}
+
 {% block contenido %}
-<div class="custom-container">
-  <div class="edit-profile-box">
-    <p>Tu username es <b>{{ object.username }}</b></p>
-    <h3>Editar datos:</h3>
-    <form method="post" class="custom-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Salvar" class="custom-btn" />
-    </form>
-  </div>
+<div class="form-page">
+    <div class="form-card">
+        <div class="text-center mb-4">
+            <h1 class="form-card-title h3">Crear cuenta</h1>
+            <p class="form-card-subtitle mb-0">Unite a nuestra comunidad de cocina</p>
+        </div>
+
+        <form method="post" class="site-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-person-plus me-2"></i>Registrarme</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0 text-muted">¿Ya tenés cuenta? <a href="{% url 'login' %}">Iniciá sesión</a></p>
+        </div>
+    </div>
 </div>
 {% endblock contenido %}

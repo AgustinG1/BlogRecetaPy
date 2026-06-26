@@ -1,21 +1,25 @@
 /* ============================================================
    ESTILOS.CSS — Blog de Recetas
-   Tema: Forest Canopy (verdes orgánicos + ivory)
+   Tema: Forest Canopy refinado (verdes orgánicos + ivory)
    ============================================================ */
 
-/* ---------- 1. VARIABLES DE MARCA ---------- */
+/* ---------- 1. VARIABLES DE DISEÑO ---------- */
 :root {
-  /* Paleta Forest Canopy */
-  --color-primary: #2d4a2b;        /* Verde bosque — marca principal */
-  --color-primary-dark: #1f3520;   /* Hover/active de primary */
-  --color-accent: #7d8471;         /* Sage — botones secundarios */
-  --color-accent-light: #a4ac86;   /* Olive — fondos suaves, badges */
-  --color-bg: #faf9f6;             /* Ivory — fondo general */
-  --color-surface: #ffffff;        /* Fondo de tarjetas */
-  --color-text: #28321f;           /* Texto principal (verde casi negro) */
+  /* Paleta principal */
+  --color-primary: #2d4a2b;
+  --color-primary-dark: #1f3520;
+  --color-primary-rgb: 45, 74, 43;
+  --color-accent: #7d8471;
+  --color-accent-light: #a4ac86;
+  --color-accent-light-rgb: 164, 172, 134;
+
+  /* Superficies */
+  --color-bg: #faf9f6;
+  --color-surface: #ffffff;
+  --color-text: #28321f;
   --color-text-muted: #5c6354;
 
-  /* Colores semánticos (independientes de la marca, NO tocar) */
+  /* Semánticos */
   --color-success: #3a7d44;
   --color-success-dark: #2c5e34;
   --color-warning: #c98a2c;
@@ -24,391 +28,874 @@
   --color-danger-dark: #962d22;
 
   /* Tipografía */
-  --font-headers: "Playfair Display", "Georgia", serif;
+  --font-headers: "Playfair Display", Georgia, serif;
   --font-body: "Open Sans", "Segoe UI", sans-serif;
 
-  /* Radios y sombras reutilizables */
-  --radius-pill: 20px;
-  --radius-card: 12px;
-  --shadow-card: 0 4px 10px rgba(45, 74, 43, 0.12);
+  /* Espaciado */
+  --section-py: 4rem;
+  --section-py-sm: 2.5rem;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-card: 16px;
+  --radius-pill: 50rem;
+
+  /* Sombras */
+  --shadow-card: 0 8px 24px rgba(45, 74, 43, 0.08);
+  --shadow-hover: 0 12px 32px rgba(45, 74, 43, 0.14);
+  --shadow-soft: 0 4px 12px rgba(45, 74, 43, 0.06);
+
+  /* Transiciones */
+  --transition-base: all 0.25s ease;
 }
 
 /* ---------- 2. BASE ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: var(--color-bg) !important;
+  background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-headers);
-  color: var(--color-primary);
-}
-
-/* Enlaces de contenido (ej. "Ver más" de CKEditor) — antes quedaban azul Bootstrap */
-a {
-  color: var(--color-primary);
-}
-a:hover {
-  color: var(--color-primary-dark);
-}
-
-/* ---------- 3. LAYOUT — FOOTER PEGADO SIN HACKS DE ABSOLUTE ---------- */
-/* Requiere en base.html: <body class="site-wrapper"> ... <main class="main-content">...</main> <footer>...</footer> */
-html, body.site-wrapper {
-  min-height: 100%;
-}
 body.site-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
 }
+
 .main-content {
   flex: 1 0 auto;
+  padding-top: var(--section-py);
+  padding-bottom: var(--section-py);
 }
 
-.footer {
-  width: 100%;
-  padding: 1rem 0;
-  background-color: var(--color-primary) !important;
+/* Encabezados de página */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+  font-weight: 700;
+  line-height: 1.2;
 }
-.footer a {
-  text-decoration: none;
-  color: var(--color-bg);
-  transition: color 0.3s ease;
+
+/* Enlaces de contenido */
+.text-content a,
+.page-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
-.footer a:hover {
-  color: var(--color-accent-light);
+
+.text-content a:hover,
+.page-link:hover {
+  color: var(--color-primary-dark);
 }
-/* El text-muted de Bootstrap es gris oscuro -> ilegible sobre fondo verde */
-.footer .text-muted {
-  color: rgba(250, 249, 246, 0.7) !important;
+
+/* ---------- 3. UTILIDADES ---------- */
+.section-title {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.section-subtitle {
+  color: var(--color-text-muted);
+  max-width: 700px;
 }
 
 /* ---------- 4. NAVBAR ---------- */
-.navbar.bg-light {
-  background-color: var(--color-primary) !important;
-}
-.navbar .navbar-brand,
-.navbar a {
-  color: var(--color-bg);
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   font-family: var(--font-headers);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-bg);
   text-decoration: none;
-  transition: color 0.3s ease;
-}
-.navbar .navbar-brand:hover,
-.navbar a:hover {
-  color: var(--color-accent-light);
-}
-.dropdown-menu .dropdown-item {
-  color: var(--color-text);
 }
 
-/* ---------- 5. BOTONES — sistema unificado ---------- */
+.navbar-brand:hover,
+.navbar-brand:focus {
+  color: var(--color-bg);
+  opacity: 0.9;
+}
+
+.navbar-brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.navbar-main {
+  background-color: var(--color-primary);
+  box-shadow: 0 2px 12px rgba(45, 74, 43, 0.15);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.navbar-main .nav-link {
+  color: rgba(250, 249, 246, 0.9);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  transition: var(--transition-base);
+}
+
+.navbar-main .nav-link:hover,
+.navbar-main .nav-link:focus {
+  color: var(--color-bg);
+  background-color: rgba(250, 249, 246, 0.1);
+}
+
+.navbar-main .nav-link.active {
+  color: var(--color-bg);
+  background-color: rgba(250, 249, 246, 0.15);
+}
+
+.navbar-main .navbar-toggler {
+  border-color: rgba(250, 249, 246, 0.4);
+  color: var(--color-bg);
+}
+
+.navbar-main .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28250, 249, 246, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.user-menu .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-bg);
+  background-color: rgba(250, 249, 246, 0.1);
+  border: 1px solid rgba(250, 249, 246, 0.2);
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+  font-weight: 500;
+  transition: var(--transition-base);
+}
+
+.user-menu .dropdown-toggle:hover,
+.user-menu .dropdown-toggle:focus {
+  background-color: rgba(250, 249, 246, 0.2);
+}
+
+.user-menu .dropdown-toggle::after {
+  margin-left: 0.5rem;
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(250, 249, 246, 0.5);
+}
+
+.user-avatar-placeholder {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(250, 249, 246, 0.2);
+  border: 2px solid rgba(250, 249, 246, 0.5);
+  color: var(--color-bg);
+  font-size: 1rem;
+}
+
+/* ---------- 5. BOTONES ---------- */
 .btn {
   border-radius: var(--radius-pill);
-  padding: 8px 16px;
-  font-family: var(--font-body);
-  transition: background-color 0.3s ease, box-shadow 0.15s ease;
-}
-.btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.4);
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  transition: var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
-/* Primario — acción principal (ej. "Ver receta") */
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.35);
+}
+
 .btn-primary {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-bg);
 }
+
 .btn-primary:hover {
   background-color: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
+  color: var(--color-bg);
 }
 
-/* Secundario — acción de apoyo (ej. "Volver al inicio") */
 .btn-secondary {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--color-bg);
 }
+
 .btn-secondary:hover {
   background-color: #656b5b;
   border-color: #656b5b;
+  color: var(--color-bg);
 }
 
-/* Éxito — confirmar / agregar (ej. "Agregar receta") */
 .btn-success {
   background-color: var(--color-success);
   border-color: var(--color-success);
   color: #ffffff;
 }
+
 .btn-success:hover {
   background-color: var(--color-success-dark);
   border-color: var(--color-success-dark);
+  color: #ffffff;
 }
 
-/* Advertencia — editar */
 .btn-warning {
   background-color: var(--color-warning);
   border-color: var(--color-warning);
   color: #ffffff;
 }
+
 .btn-warning:hover {
   background-color: var(--color-warning-dark);
   border-color: var(--color-warning-dark);
+  color: #ffffff;
 }
 
-/* Peligro — eliminar */
 .btn-danger {
   background-color: var(--color-danger);
   border-color: var(--color-danger);
   color: #ffffff;
 }
+
 .btn-danger:hover {
   background-color: var(--color-danger-dark);
   border-color: var(--color-danger-dark);
-}
-
-/* Botón custom de perfil — unificado con el sistema, ya no usa azul de Bootstrap */
-.custom-btn {
-  background-color: var(--color-primary);
   color: #ffffff;
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 12px 20px;
-  cursor: pointer;
+}
+
+.btn-outline-primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.btn-lg {
+  padding: 0.85rem 1.75rem;
   font-size: 1.1rem;
-  transition: background-color 0.3s ease;
-}
-.custom-btn:hover {
-  background-color: var(--color-primary-dark);
-}
-.custom-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.4);
 }
 
-/* Tamaño mínimo de touch target en botones dentro de tarjetas */
-.card-body .btn {
-  padding: 0.45rem 0.8rem;
-  font-size: 0.85rem;
-  min-height: 36px;
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.875rem;
 }
 
-/* Barra de búsqueda: input + botón fusionados en una sola píldora */
-.search-bar {
-  max-width: 640px;
-}
-.search-bar .form-control {
-  border-radius: var(--radius-pill) 0 0 var(--radius-pill) !important;
-  border-right: none;
-  padding-left: 1.1rem;
-  margin: 0;
-}
-.search-bar .form-control:focus {
-  box-shadow: none;
-  border-color: var(--color-accent-light);
-}
-.search-bar .btn {
-  border-radius: 0 var(--radius-pill) var(--radius-pill) 0 !important;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ---------- 6. GRID DE RECETAS — namespaced para no pisar Bootstrap ---------- */
-/* Antes: .row y .col-md-6 redefinidos globalmente (rompía otras páginas).
-   Ahora: todo vive bajo .recetas-grid para no interferir con el grid de Bootstrap. */
-.recetas-grid {
-  display: flex;
-  flex-wrap: wrap;
-  margin: -10px;
-}
-.recetas-grid .receta-col {
-  flex: 0 0 calc(50% - 20px);
-  max-width: calc(50% - 20px);
-  margin: 10px;
-  display: flex; /* permite que la tarjeta interna se estire a la altura de la fila */
-}
-@media (max-width: 768px) {
-  .recetas-grid .receta-col {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-}
-
-/* ---------- 7. TARJETAS DE RECETA ---------- */
-.horizontal-card {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+/* ---------- 6. TARJETAS ---------- */
+.card-recipe {
   background-color: var(--color-surface);
+  border: none;
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition-base);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.horizontal-card:hover {
+
+.card-recipe:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(45, 74, 43, 0.2);
+  box-shadow: var(--shadow-hover);
 }
-/* El contenido viene de CKEditor y trae sus propios h1-h6;
-   dentro de la tarjeta deben verse como sub-textos, no como títulos de página */
-.horizontal-card .card-body h1,
-.horizontal-card .card-body h2,
-.horizontal-card .card-body h3,
-.horizontal-card .card-body h4 {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0.4rem 0 0.2rem;
+
+.card-recipe .card-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
 }
-.horizontal-card img {
+
+.card-recipe .card-img-wrapper img {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
 }
-.horizontal-card:hover img {
+
+.card-recipe:hover .card-img-wrapper img {
   transform: scale(1.05);
 }
-.horizontal-card .card-body {
+
+.card-recipe .card-body {
   flex: 1;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-.horizontal-card .card-footer {
-  background-color: var(--color-surface);
-  border-top: 1px solid rgba(45, 74, 43, 0.12);
-}
-.horizontal-card .card-body p {
-  margin-bottom: 0.4rem;
-}
-/* Trunca ingredientes/instrucciones a 3 líneas en la vista de listado,
-   el texto completo se ve en detalle_receta.html */
-.horizontal-card .card-body .card-text--clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
 }
 
-/* Custom Badges */
+.card-recipe .card-title {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-recipe .card-text {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.card-recipe .card-actions {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card-recipe-horizontal {
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: var(--transition-base);
+}
+
+.card-recipe-horizontal:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.card-recipe-horizontal .recipe-thumb {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+}
+
+/* Badges */
 .badge-categoria {
   background-color: var(--color-accent-light);
   color: var(--color-primary-dark);
   font-weight: 600;
-  padding: 0.4em 0.8em;
+  padding: 0.45em 0.9em;
   font-size: 0.8rem;
   border-radius: var(--radius-pill);
 }
 
-/* ---------- 8. FORMULARIOS ---------- */
-.form-group {
-  margin-bottom: 20px;
-}
-label {
-  font-weight: bold;
-  color: var(--color-text);
-}
-input[type="text"],
-input[type="password"],
-textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-top: 6px;
-  margin-bottom: 10px;
-  resize: vertical;
-}
-input[type="text"]:focus-visible,
-input[type="password"]:focus-visible,
-textarea:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.2);
+.badge-categoria-float {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
 }
 
-.custom-form {
+/* ---------- 7. HERO ---------- */
+.hero-section {
+  position: relative;
+  min-height: 55vh;
   display: flex;
-  flex-direction: column;
-}
-
-/* ---------- 9. PERFIL ---------- */
-.custom-container {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 60px); /* resta el alto aprox. del footer, evita doble scroll */
-  padding: 2rem 0;
+  justify-content: center;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 3rem;
+  text-align: center;
 }
-.edit-profile-box {
-  max-width: 500px;
+
+.hero-section .hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-section .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(45, 74, 43, 0.92),
+    rgba(31, 53, 32, 0.85)
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 3rem 1.5rem;
+}
+
+.hero-title {
+  font-family: var(--font-headers);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--color-bg);
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.hero-lead {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: rgba(250, 249, 246, 0.92);
+  max-width: 700px;
+  margin: 0 auto 2rem;
+}
+
+/* ---------- 8. BARRA DE BÚSQUEDA ---------- */
+.search-bar {
+  max-width: 640px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-soft);
+  padding: 0.35rem;
+}
+
+.search-bar .input-group {
+  flex-wrap: nowrap;
+}
+
+.search-bar .input-group-text {
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  padding-left: 1rem;
+}
+
+.search-bar .form-control {
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  padding-left: 0.5rem;
+}
+
+.search-bar .form-control:focus {
+  box-shadow: none;
+}
+
+.search-bar .btn {
+  border-radius: var(--radius-pill) !important;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ---------- 9. FORMULARIOS ---------- */
+.site-form label,
+.site-form .form-label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.site-form p {
+  margin-bottom: 1.25rem;
+}
+
+.site-form p:last-of-type {
+  margin-bottom: 0;
+}
+
+.site-form input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]),
+.site-form select,
+.site-form textarea,
+.site-form .form-control,
+.site-form .form-select {
+  display: block;
   width: 100%;
-  padding: 24px;
+  border: 1px solid rgba(45, 74, 43, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: var(--transition-base);
+}
+
+.site-form .form-control:focus,
+.site-form .form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.15);
+  background-color: var(--color-surface);
+}
+
+.site-form textarea.form-control {
+  min-height: 140px;
+}
+
+.site-form .form-text {
+  color: var(--color-text-muted);
+}
+
+/* CKEditor dentro de formularios */
+.site-form .ck-editor__editable {
+  min-height: 160px;
+  border-color: rgba(45, 74, 43, 0.2) !important;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+}
+
+.site-form .ck.ck-toolbar {
+  border-color: rgba(45, 74, 43, 0.2) !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+}
+
+/* Tarjeta de formulario */
+.form-card {
   background-color: var(--color-surface);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-}
-.edit-profile-box h3 {
-  font-family: var(--font-headers);
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: var(--color-primary);
-}
-.edit-profile-box p {
-  font-size: 1.1rem;
+  padding: 2rem;
+  max-width: 540px;
+  width: 100%;
 }
 
-/* ---------- 10. RESPONSIVE REFINEMENTS ---------- */
-@media (max-width: 768px) {
-  /* Reducir tamaños de cabeceras hero en móviles */
-  .recipe-hero {
-    height: 300px !important;
-    margin-top: 0 !important;
+.form-card .form-card-title {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.form-card .form-card-subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Centrado vertical de formularios */
+.form-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+}
+
+/* ---------- 10. RECETA DETALLE ---------- */
+.recipe-hero {
+  position: relative;
+  height: 420px;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.recipe-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recipe-hero .recipe-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(31, 53, 32, 0.95) 0%,
+    rgba(31, 53, 32, 0.5) 50%,
+    rgba(31, 53, 32, 0.2) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 2.5rem;
+}
+
+.recipe-hero .recipe-title {
+  font-family: var(--font-headers);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--color-bg);
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.recipe-section {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+  height: 100%;
+}
+
+.recipe-section h3 {
+  font-family: var(--font-headers);
+  color: var(--color-primary);
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(164, 172, 134, 0.4);
+  margin-bottom: 1.25rem;
+}
+
+.recipe-section .text-content,
+.recipe-section .ingredientes-content,
+.recipe-section .instrucciones-content {
+  color: var(--color-text);
+  line-height: 1.8;
+}
+
+.recipe-section .text-content p:last-child,
+.recipe-section .ingredientes-content p:last-child,
+.recipe-section .instrucciones-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Comentarios */
+.comment-card {
+  background-color: var(--color-surface);
+  border: 1px solid rgba(45, 74, 43, 0.08);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.comment-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent-light);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.comment-meta {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.comment-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- 11. CATEGORÍAS ---------- */
+.category-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 500;
+  transition: var(--transition-base);
+}
+
+.category-pill:hover {
+  color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+.category-pill .category-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(45, 74, 43, 0.1);
+  padding: 3px;
+  transition: var(--transition-base);
+}
+
+.category-pill:hover .category-img {
+  border-color: var(--color-primary);
+}
+
+/* ---------- 12. NEWSLETTER / CTA ---------- */
+.newsletter-section {
+  background-color: var(--color-primary);
+  border-radius: var(--radius-card);
+  padding: 3rem 2rem;
+  color: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-section h2 {
+  color: var(--color-bg);
+  font-family: var(--font-headers);
+}
+
+.newsletter-section .form-control {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.85rem 1.25rem;
+}
+
+.newsletter-section .btn-light {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+
+.newsletter-section .btn-light:hover {
+  background-color: var(--color-accent-light);
+  color: var(--color-primary-dark);
+}
+
+/* ---------- 13. FOOTER ---------- */
+.site-footer {
+  background-color: var(--color-primary);
+  color: rgba(250, 249, 246, 0.85);
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.site-footer a {
+  color: rgba(250, 249, 246, 0.85);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.site-footer a:hover {
+  color: var(--color-bg);
+}
+
+.site-footer .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-headers);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-bg);
+  margin-bottom: 0.75rem;
+}
+
+.site-footer .footer-heading {
+  color: var(--color-bg);
+  font-family: var(--font-headers);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.site-footer .footer-bottom {
+  border-top: 1px solid rgba(250, 249, 246, 0.15);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  text-align: center;
+  color: rgba(250, 249, 246, 0.65);
+  font-size: 0.9rem;
+}
+
+/* ---------- 14. ABOUT ---------- */
+.about-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.about-card .about-img {
+  width: 100%;
+  height: 100%;
+  min-height: 350px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.about-card .about-body {
+  padding: 3rem;
+}
+
+.contact-box {
+  background-color: var(--color-bg);
+  border: 1px solid rgba(45, 74, 43, 0.1);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+}
+
+/* ---------- 15. UTILIDADES DE ESTADO ---------- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--color-text-muted);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* ---------- 16. RESPONSIVE ---------- */
+@media (max-width: 991px) {
+  .main-content {
+    padding-top: var(--section-py-sm);
+    padding-bottom: var(--section-py-sm);
   }
-  .recipe-hero h1, .hero-section h1 {
-    font-size: 2.2rem !important;
+
+  .navbar-main .navbar-collapse {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    margin-top: 0.75rem;
   }
-  .hero-section p {
-    font-size: 1.1rem !important;
+
+  .navbar-main .nav-link {
+    padding: 0.65rem 1rem;
   }
+
   .hero-section {
-    min-height: 40vh !important;
-    margin-top: 0 !important;
+    min-height: 45vh;
   }
-  
-  /* Menos overlap de las tarjetas en móvil para que no tapen los títulos */
-  .col-lg-10 > .card, .col-lg-8 > .card {
-    margin-top: -20px !important;
+
+  .recipe-hero {
+    height: 320px;
   }
-  
-  /* Ajuste para las tarjetas horizontales de la lista de recetas en móvil */
-  .horizontal-card .col-md-4 {
-    min-height: 250px; /* Evitar que la imagen colapse al 100% de 0 */
+
+  .recipe-hero .recipe-hero-overlay {
+    padding: 1.5rem;
   }
-  
-  /* Espaciado de about.html en móvil */
-  .container.d-flex.align-items-center {
-      padding-top: 2rem !important;
-      padding-bottom: 2rem !important;
+
+  .recipe-section {
+    padding: 1.5rem;
   }
-  
-  /* Reducir padding de listas (CKEditor) en móvil para que el texto no se apriete */
-  .instrucciones-content ol, .instrucciones-content ul, .ingredientes-content ul {
-      padding-left: 1.2rem !important;
+
+  .about-card .about-body {
+    padding: 2rem;
   }
-  
-  /* Evitar que el editor de comentarios se vea excesivamente alargado verticalmente */
-  .ck-editor__editable_inline {
-      min-height: 120px !important;
-      max-height: 200px !important;
-      overflow-y: auto !important;
+
+  .form-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+  }
+
+  .card-recipe .card-body {
+    padding: 1.25rem;
+  }
+
+  .category-pill .category-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .newsletter-section {
+    padding: 2rem 1.25rem;
   }
 }

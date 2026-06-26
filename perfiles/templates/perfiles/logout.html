@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block titulo %}<title>Sesión cerrada - Blog de Recetas</title>{% endblock titulo %}
+
 {% block contenido %}
-<h1>Has cerrado sesión...</h1>
+<div class="form-page">
+    <div class="form-card text-center">
+        <i class="bi bi-check-circle-fill text-success display-4 mb-3 d-block"></i>
+        <h1 class="form-card-title h3">Sesión cerrada</h1>
+        <p class="form-card-subtitle mb-4">Has cerrado sesión correctamente. ¡Esperamos verte pronto!</p>
+        <div class="d-grid gap-2">
+            <a href="{% url 'login' %}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión</a>
+            <a href="{% url 'inicio' %}" class="btn btn-outline-secondary"><i class="bi bi-house me-2"></i>Volver al inicio</a>
+        </div>
+    </div>
+</div>
 {% endblock contenido %}

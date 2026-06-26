@@ -1,14 +1,29 @@
 {% extends "base.html" %}
 
-{% block titulo %}
-<title>Agregar Avatar</title>
-{% endblock titulo %}
+{% block titulo %}<title>Agregar avatar - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
-<h3>Subir tu Avatar</h3>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Subir imagen"/>
-</form>
+<div class="form-page">
+    <div class="form-card">
+        <div class="text-center mb-4">
+            <h1 class="form-card-title h3">Tu avatar</h1>
+            <p class="form-card-subtitle mb-0">Elegí una imagen para tu perfil</p>
+        </div>
+
+        {% if user.avatar.imagen %}
+        <div class="text-center mb-4">
+            <img src="{{ user.avatar.imagen.url }}" alt="Avatar actual" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="site-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-cloud-upload me-2"></i>Subir imagen</button>
+                <a href="{% url 'editar_perfil' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Volver a mi perfil</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock contenido %}
