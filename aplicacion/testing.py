@@ -21,8 +21,14 @@ class MediosTemporalesTestCase(TestCase):
         self.addCleanup(directorio.cleanup)
         configuracion = override_settings(
             MEDIA_ROOT=directorio.name,
-            DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+            STORAGES={
+                "default": {
+                    "BACKEND": "django.core.files.storage.FileSystemStorage",
+                },
+                "staticfiles": {
+                    "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+                },
+            },
         )
         configuracion.enable()
         self.addCleanup(configuracion.disable)
-

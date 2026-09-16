@@ -11,7 +11,12 @@ DATABASES = {
 }
 SECRET_KEY = "test-only-key-for-blogrecetapy-isolated-local-tests"
 ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
-DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+STORAGES = {
+    **STORAGES,  # noqa: F405
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+}
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 DEBUG = False
 SECURE_SSL_REDIRECT = False
