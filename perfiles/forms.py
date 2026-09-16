@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from perfiles.models import Avatar
+from aplicacion.imagenes import validar_imagen
 
 
 class UserRegisterForm(UserCreationForm):
@@ -29,6 +30,13 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class AvatarFormulario(forms.ModelForm):
+    def clean_imagen(self):
+        imagen = self.cleaned_data.get('imagen')
+        if not imagen:
+            raise forms.ValidationError('Selecciona una imagen para tu avatar.')
+        if 'imagen' in self.files:
+            validar_imagen(imagen)
+        return imagen
 
     class Meta:
         model = Avatar

@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from aplicacion.uploads import subir_imagen_editor
 
 
 
@@ -26,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('aplicacion.urls')),
     path("perfiles/", include("perfiles.urls")),
-    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+    path("ckeditor5/image_upload/", subir_imagen_editor, name="ck_editor_5_upload_file"),
    
     
 ]

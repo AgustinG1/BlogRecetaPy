@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load contenido_seguro %}
 
 {% block titulo %}<title>Recetas - Blog de Recetas</title>{% endblock titulo %}
 
@@ -35,7 +36,7 @@
             <article class="card-recipe">
                 <div class="card-img-wrapper">
                     <span class="badge-categoria badge-categoria-float">{{ receta.categoria }}</span>
-                    <img src="{{ receta.imagen.url }}" alt="{{ receta.titulo }}">
+                    <img src="{{ receta.imagen|imagen_receta }}" alt="{{ receta.titulo }}">
                 </div>
                 <div class="card-body">
                     <h2 class="card-title h4">{{ receta.titulo }}</h2>

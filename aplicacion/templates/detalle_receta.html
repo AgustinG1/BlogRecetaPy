@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load contenido_seguro %}
 
 {% block titulo %}<title>{{ receta.titulo }} - Blog de Recetas</title>{% endblock titulo %}
 
 {% block contenido %}
 <!-- Hero -->
 <section class="recipe-hero" aria-labelledby="recipe-title">
-    <img src="{{ receta.imagen.url }}" alt="{{ receta.titulo }}">
+    <img src="{{ receta.imagen|imagen_receta }}" alt="{{ receta.titulo }}">
     <div class="recipe-hero-overlay">
         <div class="w-100">
             <span class="badge-categoria mb-2 d-inline-block"><i class="bi bi-tag-fill me-1"></i> {{ receta.categoria }}</span>
@@ -26,7 +27,7 @@
                     <div class="recipe-section h-100">
                         <h3><i class="bi bi-basket me-2"></i>Ingredientes</h3>
                         <div class="ingredientes-content text-content">
-                            {{ receta.ingredientes|safe }}
+                            {{ receta.ingredientes|receta_html }}
                         </div>
                     </div>
                 </div>
@@ -34,7 +35,7 @@
                     <div class="recipe-section h-100">
                         <h3><i class="bi bi-list-ol me-2"></i>Instrucciones</h3>
                         <div class="instrucciones-content text-content">
-                            {{ receta.instrucciones|safe }}
+                            {{ receta.instrucciones|receta_html }}
                         </div>
                     </div>
                 </div>
@@ -89,7 +90,7 @@
                                     <span class="comment-meta"><i class="bi bi-clock me-1"></i>{{ comentario.fecha_creacion }}</span>
                                 </div>
                                 <div class="comment-text text-content">
-                                    {{ comentario.contenido|safe }}
+                                    {{ comentario.contenido|comentario_html }}
                                 </div>
                                 {% if request.user == comentario.autor %}
                                 <div class="text-end mt-2">
@@ -120,9 +121,4 @@
     </div>
 </div>
 
-<style>
-.ckeditor-container label {
-    display: none;
-}
-</style>
 {% endblock contenido %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_ckeditor_5.fields import CKEditor5Field
+from .contenido import sanear_html
 
 # Create your models here.
 
@@ -38,6 +39,14 @@ class Receta(models.Model):
     def __str__(self):
         return self.titulo
 
+    def save(self, *args, **kwargs):
+        # También protege guardados que no pasan por los formularios públicos.
+        campos = kwargs.get('update_fields')
+        for campo in ('ingredientes', 'instrucciones'):
+            if campos is None or campo in campos:
+                setattr(self, campo, sanear_html(getattr(self, campo)))
+        return super().save(*args, **kwargs)
+
 
 class Comentario(models.Model):
     receta = models.ForeignKey(Receta, on_delete=models.CASCADE)
@@ -45,7 +54,12 @@ class Comentario(models.Model):
     contenido = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        campos = kwargs.get('update_fields')
+        if campos is None or 'contenido' in campos:
+            self.contenido = sanear_html(self.contenido, comentario=True)
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Comentario de {self.autor.username} en {self.receta.titulo}"
     
-

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from urllib.parse import urlsplit
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management.utils import get_random_secret_key
 
 
 
@@ -25,16 +28,28 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+2szg7xax@t=g4a27c%7d(oy-uox@ax10!wil(%azwy$-os#4m')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # TEMPORALMENTE TRUE PARA VER EL ERROR EN RENDER
-
-ALLOWED_HOSTS = []
+# Render siempre usa configuración de producción. Para otro proveedor, usar
+# DJANGO_ENV=production. La depuración solo se habilita explícitamente en local.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
+IS_PRODUCTION = bool(RENDER_EXTERNAL_HOSTNAME) or os.environ.get('DJANGO_ENV') == 'production'
+DEBUG = not IS_PRODUCTION and os.environ.get('DEBUG', '').lower() in {'1', 'true', 'yes'}
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if IS_PRODUCTION and (not SECRET_KEY or SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
+    raise ImproperlyConfigured('Configura una SECRET_KEY aleatoria de al menos 50 caracteres en producción.')
+SECRET_KEY = SECRET_KEY or get_random_secret_key()
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
+    'ALLOWED_HOSTS', '' if IS_PRODUCTION else 'localhost,127.0.0.1,[::1]'
+).split(',') if host.strip()]
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+if IS_PRODUCTION and (not ALLOWED_HOSTS or '*' in ALLOWED_HOSTS):
+    raise ImproperlyConfigured('Configura hosts explícitos en ALLOWED_HOSTS.')
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+CSRF_COOKIE_SECURE = IS_PRODUCTION
+SECURE_SSL_REDIRECT = IS_PRODUCTION
+SECURE_HSTS_SECONDS = 3600 if IS_PRODUCTION else 0
+if RENDER_EXTERNAL_HOSTNAME:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -71,7 +86,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR, 'aplicacion/templates'
+            BASE_DIR / 'aplicacion/templates'
          ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -98,8 +113,10 @@ DATABASES = {
     )
 }
 
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default']['OPTIONS'] = {'ssl': {}}
+if IS_PRODUCTION and not os.environ.get('DATABASE_URL'):
+    raise ImproperlyConfigured('Configura DATABASE_URL en producción.')
+if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+    DATABASES['default'].setdefault('OPTIONS', {}).setdefault('ssl', {})
 
 
 
@@ -125,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -150,7 +167,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-MEDIA_URL = 'images/'
+MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "images/")
 
 LOGIN_URL = 'login'
@@ -162,65 +179,37 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 if 'CLOUDINARY_URL' in os.environ:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "any"
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = 'authenticated'
+CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpg', 'jpeg', 'png', 'webp']
+CKEDITOR_5_MAX_FILE_SIZE = 5
+
+# Prefijos explícitos: solo el espacio de medios propio puede insertar imágenes.
+HTML_IMAGE_URL_PREFIXES = [p.strip() for p in os.environ.get('HTML_IMAGE_URL_PREFIXES', '').split(',') if p.strip()]
+if os.environ.get('CLOUDINARY_URL'):
+    cloud_name = urlsplit(os.environ['CLOUDINARY_URL']).hostname
+    if cloud_name:
+        HTML_IMAGE_URL_PREFIXES.append(f'https://res.cloudinary.com/{cloud_name}/')
 
 CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-
+        'language': 'es',
+        'toolbar': ['bold', 'italic', 'link', 'bulletedList', 'numberedList'],
     },
     'extends': {
-        'blockToolbar': [
-            'paragraph', 'heading1', 'heading2', 'heading3',
-            '|',
-            'bulletedList', 'numberedList',
-            '|',
-            'blockQuote',
-        ],
-        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-        'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                    'insertTable',],
-        'image': {
-            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
-            'styles': [
-                'full',
-                'side',
-                'alignLeft',
-                'alignRight',
-                'alignCenter',
-            ]
-
-        },
-        'table': {
-            'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
-            'tableProperties', 'tableCellProperties' ],
-            'formatBlocks': [
-                {
-                    'name': 'Normal',
-                    'class': 'document-base'
-                }
-            ]
-        },
-        'heading': {
-            'options': [
-                { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
-                { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
-                { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
-                { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
-            ]
-        }
+        'language': 'es',
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList',
+                    'numberedList', 'blockQuote', 'imageUpload'],
+        'heading': {'options': [
+            {'model': 'paragraph', 'title': 'Párrafo', 'class': 'ck-heading_paragraph'},
+            {'model': 'heading2', 'view': 'h2', 'title': 'Título', 'class': 'ck-heading_heading2'},
+            {'model': 'heading3', 'view': 'h3', 'title': 'Subtítulo', 'class': 'ck-heading_heading3'},
+        ]},
+        'image': {'toolbar': ['imageTextAlternative']},
     },
-    'list': {
-        'properties': {
-            'styles': True,
-            'startIndex': True,
-            'reversed': True,
-        }
-    }
+    'comentarios': {
+        'language': 'es',
+        'toolbar': ['bold', 'italic', 'link', 'bulletedList', 'numberedList'],
+    },
 }
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
