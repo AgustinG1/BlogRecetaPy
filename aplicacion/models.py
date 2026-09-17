@@ -16,7 +16,8 @@ class Categoria(models.Model):
     nombre = models.CharField(
         max_length=100,
         choices=CATEGORIAS_CHOICES,
-        default='salada'
+        default='salada',
+        unique=True,
     )
 
     def __str__(self):
@@ -26,15 +27,24 @@ class Categoria(models.Model):
 
 
 class Receta(models.Model):
-    titulo = models.CharField(max_length=200, null=True)
+    titulo = models.CharField(max_length=200)
     subtitulo = models.CharField(max_length=200, null=True)  
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
     ingredientes = CKEditor5Field('Ingredientes', config_name='extends')  
     instrucciones = CKEditor5Field('Instrucciones', config_name='extends')  
  
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to='images', default='images/receta_default.jpg')  
     creador = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['-fecha_publicacion', '-id'], name='receta_fecha_id_idx'),
+            models.Index(
+                fields=['categoria', '-fecha_publicacion', '-id'],
+                name='receta_categoria_fecha_idx',
+            ),
+        ]
     
     def __str__(self):
         return self.titulo
@@ -53,6 +63,14 @@ class Comentario(models.Model):
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
     contenido = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=['receta', 'fecha_creacion', 'id'],
+                name='comentario_receta_fecha_idx',
+            ),
+        ]
 
     def save(self, *args, **kwargs):
         campos = kwargs.get('update_fields')

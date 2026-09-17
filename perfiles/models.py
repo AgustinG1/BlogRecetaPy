@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Avatar(models.Model):
     # Avatar es una tabla anexa de User
     # Relacion con la tabla User
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # upload_to es la subcarpeta dentro de la carpeta media
     imagen = models.ImageField(upload_to='avatares', null=True, blank=True)
 
